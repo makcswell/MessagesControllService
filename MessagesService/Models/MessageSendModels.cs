@@ -1,8 +1,8 @@
 ﻿namespace Exam.Models
 {
-    public class MessageRequest
+    public class MessageSendModels
     {
-        public Data? Data { get; set; }
+        public Data? Data { get; set; } 
         public Tags? Tags { get; set; }   
     }
 

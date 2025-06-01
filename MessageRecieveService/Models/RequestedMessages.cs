@@ -1,8 +1,8 @@
-﻿namespace Exam.Models
+﻿namespace MessageRecieveService.Models
 {
-    public class MessageRequest
+    public class RequestedMessages
     {
-        public Data? Data { get; set; }
+        public Data? Data { get; set; } 
         public Tags? Tags { get; set; }   
     }
 
@@ -15,5 +15,9 @@
     {
         public string? Index { get; set; } 
     }
-
 }
+
+
+
+
+
