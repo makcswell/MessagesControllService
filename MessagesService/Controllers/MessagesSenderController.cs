@@ -1,60 +1,79 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Exam.Models;
-using System.Timers;
 using Newtonsoft.Json;
 using System.Text;
+using System.Timers;
 
-namespace Exam.Controllers
+namespace MessagesService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MessagesSenderController : ControllerBase
+    public class MessageSenderController : ControllerBase
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private static System.Timers.Timer? timer;
-        private readonly ILogger<MessagesSenderController> logger;
+        private readonly ILogger<MessageSenderController> logger;
+        private static string currentIndex = Guid.NewGuid().ToString();
 
-        public MessagesSenderController(ILogger<MessagesSenderController> logger)
+        public MessageSenderController(ILogger<MessageSenderController> logger)
         {
-            this.logger = logger; 
-            timer = new System.Timers.Timer(5000); //5 секунд
-            timer.Elapsed += SendData;
-            timer.Start();
+            this.logger = logger;
         }
-        [HttpPost]
-     
-        private async void SendData(object? sender, ElapsedEventArgs e)
+
+        [HttpPost("send")]
+        public async Task<IActionResult> SendMessage([FromBody] MessageSendModels messageRequest)
         {
-           
-            MessageSendModels? messageRequest = new MessageSendModels
+            if (messageRequest == null || messageRequest.Data == null || messageRequest.Tags == null)
+            {
+                return BadRequest("Invalid message request.");
+            }
+
+         
+            messageRequest.Tags.Index = currentIndex;
+
+            string json = JsonConvert.SerializeObject(messageRequest);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync("http://localhost:32777/api/messagereceiver/receive", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.LogError($"Error sending data: {response.StatusCode}");
+                return StatusCode((int)response.StatusCode, "Error sending message.");
+            }
+
+            return Ok("Message sent successfully.");
+        }
+
+        [HttpPost("generate")]
+        public async Task<IActionResult> GenerateAndSendMessage()
+        {
+            var messageRequest = new MessageSendModels
             {
                 Data = new Data
                 {
-                    Info = GenerateRandomText() 
+                    Info = GenerateRandomText()
                 },
                 Tags = new Tags
                 {
-                    Index = GenerateRandomIndex() 
+                    Index = currentIndex
                 }
             };
 
             string json = JsonConvert.SerializeObject(messageRequest);
-            StringContent? content = new(json, Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            
-            await httpClient.PostAsync("http://localhost:5000/api/messages", content);
+            var response = await httpClient.PostAsync("http://localhost:32777/api/messagereceiver/receive", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.LogError($"Error sending data: {response.StatusCode}");
+                return StatusCode((int)response.StatusCode, "Error sending message.");
+            }
+
+            return Ok("Message sent successfully.");
         }
-
 
         private string GenerateRandomText()
         {
-            return "Some rndm text" + Guid.NewGuid();
-        }
-
-        private string GenerateRandomIndex()
-        {
-            return Guid.NewGuid().ToString();
+            return "Some rndm text " + Guid.NewGuid();
         }
     }
 }

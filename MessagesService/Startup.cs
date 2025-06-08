@@ -10,41 +10,11 @@ namespace MessagesService
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddScoped<ITransferLogic, TransferLogic>();
-            //services.AddScoped<UsersLogic>();
-            // services.AddDbContext<TransferDbContext>(d => d.UseNpgsql(config.GetConnectionString("MyConnection")),
-            //  ServiceLifetime.Scoped, ServiceLifetime.Scoped);
-
-            //services.AddSingleton<CheckUserSessionMiddleware>();
-            // services.AddSingleton<ClaimsCheckMiddleware>();
 
             services.AddMemoryCache();
 
             services.AddCors();
             services.AddMvc();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(cfg =>
-                {
-                    cfg.RequireHttpsMetadata = false;
-                    cfg.SaveToken = true;
-                    cfg.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidIssuer = config["JwtIssuer"],
-                        ValidateIssuer = true,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        //IssuerSigningKey =
-                        //    new SymmetricSecurityKey(Convert.FromBase64String(SecretKeyStorage.SecretKey)),
-                        ClockSkew = TimeSpan.Zero
-                    };
-                });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

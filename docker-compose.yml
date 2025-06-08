@@ -1,0 +1,23 @@
+﻿version: '3.8'
+
+services:
+  messagesender:
+    build:
+      context: ./C:\Users\User\source\repos\Exam\MessagesService
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  messagesreceiver:
+    build:
+      context: ./C:\Users\User\source\repos\Exam\MessageRecieveService
+      dockerfile: Dockerfile
+    ports:
+      - "5002:80" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+
+  # Опционально: добавьте общий сервис для базы данных или других нужд
