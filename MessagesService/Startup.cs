@@ -17,6 +17,7 @@ namespace MessagesService
             services.AddMvc();
 
             services.AddControllers();
+            services.AddHttpClient();
             services.AddSwaggerGen(c =>
             {
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

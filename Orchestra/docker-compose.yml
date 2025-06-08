@@ -2,6 +2,7 @@
 
 services:
   messagesender:
+    hostname: messagesender
     build:
       context: ./C:\Users\User\source\repos\Exam\MessagesService
       dockerfile: Dockerfile
@@ -9,8 +10,11 @@ services:
       - "32768:8080" 
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - ur_net
 
   messagesreceiver:
+    hostname: messagereceiver
     build:
       context: ./C:\Users\User\source\repos\Exam\MessageRecieveService
       dockerfile: Dockerfile
@@ -19,4 +23,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - messagesender 
+      - messagesender
+    networks:
+      - ur_net
+        
+        
+networks:
+  ur_net:
+    external: true
+    name: ur_net

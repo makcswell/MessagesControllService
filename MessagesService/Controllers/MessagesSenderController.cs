@@ -10,13 +10,14 @@ namespace MessagesService.Controllers
     [Route("api/[controller]")]
     public class MessageSenderController : ControllerBase
     {
-        private static readonly HttpClient httpClient = new HttpClient();
+        private readonly HttpClient httpClient;
         private readonly ILogger<MessageSenderController> logger;
         private static string currentIndex = Guid.NewGuid().ToString();
 
-        public MessageSenderController(ILogger<MessageSenderController> logger)
+        public MessageSenderController(ILogger<MessageSenderController> logger, HttpClient httpClient)
         {
             this.logger = logger;
+            this.httpClient = httpClient;
         }
 
         [HttpPost("send")]
@@ -58,10 +59,11 @@ namespace MessagesService.Controllers
                 }
             };
 
-            string json = JsonConvert.SerializeObject(messageRequest);
+            /*string json = JsonConvert.SerializeObject(messageRequest);
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync("http://localhost:32777/api/messagereceiver/receive", content);
+            var response = await httpClient.PostAsync("http://localhost:32777/api/messagereceiver/receive", content);*/
+            var response = await httpClient.PostAsJsonAsync("http://messagereceiver:8080/api/messagereceiver/receive", messageRequest);
             if (!response.IsSuccessStatusCode)
             {
                 logger.LogError($"Error sending data: {response.StatusCode}");
