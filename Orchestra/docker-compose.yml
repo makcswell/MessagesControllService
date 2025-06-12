@@ -7,7 +7,7 @@ services:
       context: ./C:\Users\User\source\repos\Exam\MessagesService
       dockerfile: Dockerfile
     ports:
-      - "32768:8080" 
+      - "32775:8080" 
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     networks:
@@ -19,7 +19,7 @@ services:
       context: ./C:\Users\User\source\repos\Exam\MessageRecieveService
       dockerfile: Dockerfile
     ports:
-      - "32769:8080" 
+      - "32776:8080" 
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:

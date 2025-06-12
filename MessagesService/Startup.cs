@@ -41,6 +41,16 @@ namespace MessagesService
                     }
                 });
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
             services.AddRouting(urls => urls.LowercaseUrls = true);
             // services.Configure<CleanupOptions>(config.GetSection("CleanupOptions"));
             // services.AddHostedService<OldTransitionsRemover>();
@@ -52,7 +62,7 @@ namespace MessagesService
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseCors("AllowAll");
             app.UseSwagger();
             app.UseSwaggerUI();
 

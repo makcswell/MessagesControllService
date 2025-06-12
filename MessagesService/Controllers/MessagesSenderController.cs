@@ -34,7 +34,7 @@ namespace MessagesService.Controllers
             string json = JsonConvert.SerializeObject(messageRequest);
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync("http://localhost:32777/api/messagereceiver/receive", content);
+            var response = await httpClient.PostAsync("http://messagereceiver:8080/api/messagereceiver/receive", content);
             if (!response.IsSuccessStatusCode)
             {
                 logger.LogError($"Error sending data: {response.StatusCode}");
